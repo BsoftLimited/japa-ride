@@ -14,5 +14,4 @@ class CodeInputState extends State<CodeInput>{
           decoration: InputDecoration(border: OutlineInputBorder()),),
       ));
   }
-  
 }
