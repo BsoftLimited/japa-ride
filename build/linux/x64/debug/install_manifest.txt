@@ -1,0 +1,13 @@
+/home/bsoft/Projects/japa-ride/build/linux/x64/debug/bundle/japa
+/home/bsoft/Projects/japa-ride/build/linux/x64/debug/bundle/data/icudtl.dat
+/home/bsoft/Projects/japa-ride/build/linux/x64/debug/bundle/lib/libflutter_linux_gtk.so
+/home/bsoft/Projects/japa-ride/build/linux/x64/debug/bundle/data/flutter_assets/NOTICES.Z
+/home/bsoft/Projects/japa-ride/build/linux/x64/debug/bundle/data/flutter_assets/kernel_blob.bin
+/home/bsoft/Projects/japa-ride/build/linux/x64/debug/bundle/data/flutter_assets/AssetManifest.json
+/home/bsoft/Projects/japa-ride/build/linux/x64/debug/bundle/data/flutter_assets/FontManifest.json
+/home/bsoft/Projects/japa-ride/build/linux/x64/debug/bundle/data/flutter_assets/res/logo.png
+/home/bsoft/Projects/japa-ride/build/linux/x64/debug/bundle/data/flutter_assets/res/logo.svg
+/home/bsoft/Projects/japa-ride/build/linux/x64/debug/bundle/data/flutter_assets/version.json
+/home/bsoft/Projects/japa-ride/build/linux/x64/debug/bundle/data/flutter_assets/shaders/ink_sparkle.frag
+/home/bsoft/Projects/japa-ride/build/linux/x64/debug/bundle/data/flutter_assets/fonts/MaterialIcons-Regular.otf
+/home/bsoft/Projects/japa-ride/build/linux/x64/debug/bundle/data/flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:japa/screens/Recovery.dart';
 import 'package:japa/screens/launcher.dart';
 import 'package:japa/screens/signup.dart';
 
@@ -29,6 +30,7 @@ class JAPARide extends StatelessWidget {
             routes: {
                 "/" :(context) => const Launcher(),
                 "/signup" : (context) => Signup(),
+                "/recovery" : (context) => Recovery(),
             },
         );
     }

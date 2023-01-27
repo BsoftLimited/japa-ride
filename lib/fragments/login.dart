@@ -41,7 +41,11 @@ class LoginFormState extends State<LoginForm> {
                     Input(hint: "Username", icon: Icons.person, color: const Color.fromARGB(255, 245, 160, 94), controller: usernameController.value),
                     const SizedBox(height: 15,),
                     Input(hint: "Password", icon: Icons.lock, inputType: TextInputType.visiblePassword, color: const Color.fromARGB(255, 245, 160, 94) , controller: passwordController.value),
-                    const SizedBox(height: 15,),
+                  const SizedBox(height: 3,),
+                  Container(
+                      alignment: AlignmentDirectional.centerStart,
+                      child: TextButton(onPressed: ()=>{ Navigator.pushNamed(context, "/recovery") }, child: Text("Forgotten password ?", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),))),
+                  const SizedBox(height: 10,),
                     MaterialButton(onPressed: login, 
                         color: const Color.fromARGB(255, 245, 160, 94),
                         child: const Padding(
@@ -55,7 +59,7 @@ class LoginFormState extends State<LoginForm> {
                         children: [
                             const Text("do not have an account ?", style: TextStyle(fontSize: 14),),
                             TextButton(onPressed: () =>{ Navigator.pushNamed(context, "/signup") }, child: const Text("register", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),)),]
-                    )
+                    ),
           ]),
         );
     }

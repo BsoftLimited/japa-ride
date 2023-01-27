@@ -1,54 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:japa/utils/util.dart';
 
 class Input extends StatefulWidget{
     final String hint;
     final IconData? icon;
+    final double textSize, iconSize;
     final Color color;
+    final bool usePrefix;
     final TextInputType inputType;
     final TextEditingController controller;
 
-    Input({Key? key, required this.hint, this.icon, required this.controller, this.color = const Color.fromARGB(255, 245, 160, 94), this.inputType = TextInputType.text }) : super(key: key);
+    Input({Key? key, required this.hint, this.icon, required this.controller, this.usePrefix = true, this.iconSize = 24, this.textSize = 16, this.color = const Color.fromARGB(255, 245, 160, 94), this.inputType = TextInputType.text }) : super(key: key);
 
     @override
-    State<StatefulWidget> createState()=> InputState();
+    State<StatefulWidget> createState()=> this.inputType == TextInputType.visiblePassword ? InputPasswordState() : InputTextState();
 }
 
-class InputState extends State<Input>{
-    Option<bool> __hide = Option.none();
-
+abstract class InputBaseState extends State<Input>{
+    bool __hide = false;
     UnderlineInputBorder __getBorder(Color color){
         return UnderlineInputBorder(
             borderSide: BorderSide(width: 1, style: BorderStyle.solid, color: color),
         );
     }
 
-    TextStyle __getStyle()=> TextStyle( fontSize: 16.0, color: widget.color );
+    TextStyle __getStyle()=> TextStyle( fontSize: widget.textSize, color: widget.color );
 
     Icon? __getPrexfixIcon(){
-        if(widget.icon != null){
+        if(widget.icon != null && widget.usePrefix){
             return Icon(widget.icon, size: 24, color: widget.color);
         }
     }
 
-    InputDecoration __getDecoration(){
-        if(__hide.is_none){
-            __hide = Option.some(widget.inputType == TextInputType.visiblePassword);
-        }
-        IconButton? suffixIcon = widget.inputType != TextInputType.visiblePassword ? null : IconButton(
-            icon: Icon(__hide.value ? Icons.remove_red_eye : Icons.visibility_off , size: 24),
-            color: widget.color,
-            onPressed: (){ setState(()=> __hide.set(!__hide.value) );});
-        return InputDecoration(
-            labelText: widget.hint,
-            labelStyle: TextStyle( fontSize: 16.0, color: widget.color ),
-            focusColor: widget.color,
-            border: __getBorder(widget.color),
-            enabledBorder: __getBorder(Colors.grey),
-            prefixIcon : __getPrexfixIcon(),
-            suffixIcon: suffixIcon
-        );
-    }
+    InputDecoration __getDecoration();
 
     @override
     Widget build(BuildContext context) {
@@ -56,8 +39,42 @@ class InputState extends State<Input>{
             keyboardType: widget.inputType,
             controller: widget.controller,
             decoration: __getDecoration(),
-            obscureText: __hide.value,
+            obscureText: __hide,
             style: __getStyle(),
         );;
+    }
+}
+
+class InputTextState extends InputBaseState{
+    @override
+    InputDecoration __getDecoration(){
+        return InputDecoration(
+            labelText: widget.hint,
+            labelStyle: TextStyle( fontSize: widget.textSize, color: widget.color ),
+            focusColor: widget.color,
+            border: __getBorder(widget.color),
+            enabledBorder: __getBorder(Colors.grey),
+            prefixIcon : __getPrexfixIcon(),
+        );
+    }
+}
+
+class InputPasswordState extends InputBaseState{
+    @override
+    InputDecoration __getDecoration(){
+        __hide = true;
+        IconButton? suffixIcon = widget.usePrefix ? IconButton(
+            icon: Icon(__hide ? Icons.remove_red_eye : Icons.visibility_off , size: widget.iconSize),
+            color: widget.color,
+            onPressed: (){ setState(()=> __hide = !__hide );}) : null;
+        return InputDecoration(
+            labelText: widget.hint,
+            labelStyle: TextStyle( fontSize: widget.textSize, color: widget.color ),
+            focusColor: widget.color,
+            border: __getBorder(widget.color),
+            enabledBorder: __getBorder(Colors.grey),
+            prefixIcon : __getPrexfixIcon(),
+            suffixIcon: suffixIcon,
+        );
     }
 }
