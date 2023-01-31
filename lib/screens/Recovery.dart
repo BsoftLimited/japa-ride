@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:japa/components/code_input.dart';
 import 'package:japa/components/input.dart';
 
-class RecoveryForm extends StatefulWidget{
-  @override
-  State<StatefulWidget> createState() => RecoveryFormState();
-}
-
-class RecoveryFormState extends State<RecoveryForm>{
+class RecoveryState extends State<Recovery>{
   TextEditingController controller = TextEditingController();
 
-  @override
-  Widget build(BuildContext context) {
+  void validate(){
+    setState(() {
+      widget.number = "07087952034";
+    });
+  }
+
+  Widget build_form(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Forgotten Password", style: TextStyle(color: Colors.white70),)),
       body: SafeArea(
@@ -33,7 +33,7 @@ class RecoveryFormState extends State<RecoveryForm>{
               ),
               const SizedBox(height: 15,),
               Center(
-                child: MaterialButton(onPressed: ()=>{},
+                child: MaterialButton(onPressed: validate,
                   child: Padding( padding: EdgeInsets.only(left: 30, right:  30, top: 10, bottom: 10), child: Text("Reset Password", style: TextStyle(color: Colors.white70),)),
                   color: const Color.fromARGB(255, 245, 160, 94),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
@@ -44,63 +44,56 @@ class RecoveryFormState extends State<RecoveryForm>{
       ),
     );
   }
-}
 
-class RecoveryVerificationState extends State<RecoveryVerification>{
-  TextEditingController codeOne = TextEditingController();
-  TextEditingController codeTwo = TextEditingController();
-  TextEditingController codeThree = TextEditingController();
-  TextEditingController codeFour = TextEditingController();
-  TextEditingController codeFive = TextEditingController();
-  TextEditingController codeSix = TextEditingController();
-  List<int> code = [];
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build_verification(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: const Text("Verify Phone Number", style: TextStyle(color: Colors.white70),)),
-    body: SafeArea(
-      child: Column(
-        children: [
-          SizedBox(height: 30,),
-          Center(
-            child: Text("A code as been sent to your phone number",
-              style: TextStyle(color: Colors.black54, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
-          ),
-          SizedBox(height: 8,),
-          Center(child: Image.asset("res/phone.png", width: 200,),),
-          SizedBox(height: 24,),
-          Center(
-            child: Text("Enter the OTP sent to 08168192868",
-              style: TextStyle(color: Colors.black54, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
-          ),
-          SizedBox(height: 10,),
-          Center(child: Row(mainAxisSize: MainAxisSize.min, children: [
-            CodeInput(),
-            SizedBox(width: 10,),
-            CodeInput(),
-            SizedBox(width: 10,),
-            CodeInput(),
-            SizedBox(width: 10,),
-            CodeInput(),
-            SizedBox(width: 10,),
-            CodeInput(),
-            SizedBox(width: 10,),
-            CodeInput(),
-          ]))
-        ],),
-    ));
+        body: SafeArea(
+          child: Column(
+            children: [
+              SizedBox(height: 30,),
+              Center(
+                child: Text("A code as been sent to your phone number",
+                  style: TextStyle(color: Colors.black54, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
+              ),
+              SizedBox(height: 8,),
+              Center(child: Image.asset("res/phone.png", width: 200,),),
+              SizedBox(height: 5,),
+              Center(child: Text("OTP  Verification", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),)),
+              SizedBox(height: 20,),
+              Center(
+                child: Text("Enter the OTP sent to ${widget.number}",
+                  style: TextStyle(color: Colors.black54, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
+              ),
+              SizedBox(height: 10,),
+              Center(child: CodeInput()),
+              SizedBox(height: 15,),
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("Didn’t receive OTP?", style: TextStyle(fontSize: 14),),
+                    TextButton(onPressed: () =>{ }, child: const Text("RESEND", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),)),]
+              ),
+              const SizedBox(height: 15,),
+              MaterialButton(onPressed: ()=>{},
+                  color: const Color.fromARGB(255, 245, 160, 94),
+                  child: const Padding(
+                    padding: EdgeInsets.only(top: 12, bottom: 12, right: 30, left: 30),
+                    child: Text("Submit", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  )),
+            ],),
+        ));
   }
-}
 
-class RecoveryVerification extends StatefulWidget{
-  @override
-  State<StatefulWidget> createState() => RecoveryVerificationState();
-}
-
-class Recovery extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
-    return RecoveryVerification();
+    return widget.number == null ? build_form(context) : build_verification(context);
   }
+}
+
+class Recovery extends StatefulWidget{
+  String? number;
+
+  @override
+  State<StatefulWidget> createState() => RecoveryState();
 }

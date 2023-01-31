@@ -12,3 +12,10 @@
 /home/bsoft/Projects/japa-ride/build/linux/x64/debug/flutter/CMakeFiles/rebuild_cache.dir
 /home/bsoft/Projects/japa-ride/build/linux/x64/debug/flutter/CMakeFiles/edit_cache.dir
 /home/bsoft/Projects/japa-ride/build/linux/x64/debug/flutter/CMakeFiles/flutter_assemble.dir
+/home/bsoft/Projects/japa-ride/build/linux/x64/debug/plugins/smart_auth/CMakeFiles/install/strip.dir
+/home/bsoft/Projects/japa-ride/build/linux/x64/debug/plugins/smart_auth/CMakeFiles/install/local.dir
+/home/bsoft/Projects/japa-ride/build/linux/x64/debug/plugins/smart_auth/CMakeFiles/install.dir
+/home/bsoft/Projects/japa-ride/build/linux/x64/debug/plugins/smart_auth/CMakeFiles/list_install_components.dir
+/home/bsoft/Projects/japa-ride/build/linux/x64/debug/plugins/smart_auth/CMakeFiles/rebuild_cache.dir
+/home/bsoft/Projects/japa-ride/build/linux/x64/debug/plugins/smart_auth/CMakeFiles/edit_cache.dir
+/home/bsoft/Projects/japa-ride/build/linux/x64/debug/plugins/smart_auth/CMakeFiles/smart_auth_plugin.dir

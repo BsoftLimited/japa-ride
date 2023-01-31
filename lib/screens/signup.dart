@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:japa/components/input.dart';
 import 'package:japa/components/signup_input.dart';
 
+enum SignupAs{ Client, Driver }
+
 class SignupForm extends StatefulWidget{
     @override
     State<StatefulWidget> createState() => SignupFormState();
@@ -23,6 +25,8 @@ class SignupFormState extends State<SignupForm>{
 
     @override
     Widget build(BuildContext context) {
+        SignupAs? __as = SignupAs.Client;
+
         return SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(20),
@@ -30,6 +34,23 @@ class SignupFormState extends State<SignupForm>{
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                    Row(mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.max, crossAxisAlignment: CrossAxisAlignment.center, children: [
+                        Text("Sign up as: "),
+                        SizedBox(width: 100,
+                          child: ListTile(
+                              title: Row(children: <Widget>[
+                                      Radio(value: SignupAs.Driver, groupValue: __as, onChanged: (value) { setState(() { __as = value;}); },),
+                                      Text('Driver', style: TextStyle(fontSize: 12),),
+                                  ],
+                              ))),
+                        SizedBox(width: 100,
+                            child: ListTile(
+                                title: Row(children: <Widget>[
+                                    Radio(value: SignupAs.Client, groupValue: __as, onChanged: (value) { setState(() { __as = value;}); },),
+                                    Text('Client', style: TextStyle(fontSize: 12),),
+                                ],
+                                ))),
+                    ],),
                     SignUpInput(hint: "Full Name", information: "Your followed by your surname. example John Smith", inputType: TextInputType.name, check: check, monitior: monitor,  controller: fullName),
                     const SizedBox(height: 12,),
                     SignUpInput(hint: "Email Address", information: "Your email addres must be valid", inputType: TextInputType.emailAddress, check: check, monitior: monitor,  controller: email),

@@ -13,14 +13,6 @@ class LoginForm extends StatefulWidget {
 class LoginFormState extends State<LoginForm> {
     Option<TextEditingController> usernameController = Option.none();
     Option<TextEditingController> passwordController = Option.none();
-
-    void login(){
-
-    }
-
-    void toLogin(){
-
-    }
   
     @override
     Widget build(BuildContext context) {
@@ -46,7 +38,7 @@ class LoginFormState extends State<LoginForm> {
                       alignment: AlignmentDirectional.centerStart,
                       child: TextButton(onPressed: ()=>{ Navigator.pushNamed(context, "/recovery") }, child: Text("Forgotten password ?", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),))),
                   const SizedBox(height: 10,),
-                    MaterialButton(onPressed: login, 
+                    MaterialButton(onPressed: () => { Navigator.pushReplacementNamed(context, "/main") },
                         color: const Color.fromARGB(255, 245, 160, 94),
                         child: const Padding(
                             padding: EdgeInsets.only(top: 12, bottom: 12, right: 30, left: 30),
