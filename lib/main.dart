@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:japa/fragments/login.dart';
 import 'package:japa/screens/Recovery.dart';
 import 'package:japa/screens/account_settings.dart';
 import 'package:japa/screens/launcher.dart';
+import 'package:japa/screens/loading.dart';
 import 'package:japa/screens/main.dart';
 import 'package:japa/screens/my.dart';
 import 'package:japa/screens/signup.dart';
-import 'package:japa/screens/wallet.dart';
 
-void main() =>runApp(const JAPARide());
+void main() =>runApp(const JapaRide());
 
-class JAPARide extends StatelessWidget {
-    const JAPARide({super.key});
+class JapaRide extends StatefulWidget {
+    const JapaRide({super.key});
 
+    @override
+  State<StatefulWidget> createState() => __JapaRide();
+}
 
+class __JapaRide extends State<JapaRide>{
     @override
     Widget build(BuildContext context) {
         Map<int, Color> swatch = {
@@ -31,13 +36,15 @@ class JAPARide extends StatelessWidget {
             title: 'Japa Ride',
             theme: ThemeData(primarySwatch: MaterialColor( const Color.fromARGB(255, 245, 160, 94).value, swatch)),
             initialRoute: "/",
+            debugShowCheckedModeBanner: false,
             routes: {
                 "/" :(context) => const Launcher(),
+                "/loading" : (context) => Loading(),
                 "/signup" : (context) => Signup(),
+                "/login" : (context) => Login(),
                 "/recovery" : (context) => Recovery(),
-                "/main" : (context) => Main(),
                 "/main/settings": (context) => AccountSettings(),
-                "/main/wallet" : (context) => Wallet(),
+                "/main": (context) => Main(),
                 "/test" : (context) => MyApp(),
             },
         );

@@ -10,7 +10,7 @@ class Wallet extends StatefulWidget{
 
 class __WalletState extends State<Wallet>{
     late ScrollController __scrollController;
-    static const kExpandedHeight = 160.0;
+    static const kExpandedHeight = 180.0;
 
     bool get __isSliverAppBarExpanded {
         return __scrollController.hasClients && __scrollController.offset > kExpandedHeight - kToolbarHeight;
@@ -61,7 +61,7 @@ class __WalletState extends State<Wallet>{
                         leading: Container(margin: const EdgeInsets.all(8.0),
                             color: Colors.primaries[Random().nextInt(Colors.primaries.length)], padding: const EdgeInsets.all(8), width: 100),
                         title: Text('Place ${index + 1}', textScaleFactor: 1.5));
-                    },childCount: 20),
+                    },childCount: 0),
                 ),
             ]),
         );

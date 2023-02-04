@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:japa/components/input.dart';
 import 'package:japa/utils/util.dart';
+import 'package:pinput/pinput.dart';
+
+Widget __getflag(String country){
+    return Image.asset('icons/flags/png/${country}.png', package: 'country_icons', width: 28, height: 28,);
+}
 
 class SignUpInput extends StatefulWidget {
   final String hint, information;
@@ -55,8 +61,10 @@ class SigupInputTextState extends SignupInputBaseState{
       controller = Option.some(widget.controller);
       isOk = widget.check(controller.value.text);
       controller.value.addListener(() {
-        isOk = widget.check(controller.value.value.text);
-        widget.monitior(isOk);
+        setState(() {
+          isOk = widget.check(controller.value.value.text);
+          widget.monitior(isOk);
+        });
       });
     }
     return build_normal();
@@ -72,7 +80,7 @@ class SignupInputPasswordState extends SignupInputBaseState{
       children: [
         Column(
           children: [
-            Input(hint: "Password", icon: widget.iconData, usePrefix: false, controller: controller.value, inputType: widget.inputType, iconSize: 16, textSize: 14,),
+            Input(hint: "Password", icon: widget.iconData, controller: controller.value, inputType: widget.inputType, iconSize: 16, textSize: 14,),
             const SizedBox(height: 3),
             Row(
                 mainAxisSize: MainAxisSize.max,
@@ -88,7 +96,7 @@ class SignupInputPasswordState extends SignupInputBaseState{
         const SizedBox(height: 15),
         Column(
           children: [
-            Input(hint: "Re-Enter password", icon: widget.iconData, usePrefix: false, controller: recontroller.value, inputType: widget.inputType, iconSize: 16, textSize: 14,),
+            Input(hint: "Re-Enter password", icon: widget.iconData, controller: recontroller.value, inputType: widget.inputType, iconSize: 16, textSize: 14,),
             const SizedBox(height: 3),
             Row(
                 mainAxisSize: MainAxisSize.max,
@@ -111,9 +119,11 @@ class SignupInputPasswordState extends SignupInputBaseState{
       controller = Option.some(widget.controller);
       isOk = widget.check(controller.value.text);
       controller.value.addListener(() {
-        isOk = widget.check(controller.value.value.text);
-          isEqual = controller.value.value.text == recontroller.value.value.text;
-          widget.monitior(isEqual && isOk);
+         setState(() {
+           isOk = widget.check(controller.value.value.text);
+           isEqual = controller.value.value.text == recontroller.value.value.text;
+           widget.monitior(isEqual && isOk);
+         });
       });
     }
 
@@ -121,8 +131,10 @@ class SignupInputPasswordState extends SignupInputBaseState{
       recontroller = Option.some(TextEditingController());
       isEqual = controller.value.value.text == recontroller.value.value.text;
       recontroller.value.addListener(() {
-        isEqual = controller.value.value.text == recontroller.value.value.text;
-        widget.monitior(isEqual && isOk && !controller.value.text.isEmpty);
+        setState(() {
+          isEqual = controller.value.value.text == recontroller.value.value.text;
+          widget.monitior(isEqual && isOk && !controller.value.text.isEmpty);
+        });
       });
     }
     return build_password();
@@ -131,17 +143,39 @@ class SignupInputPasswordState extends SignupInputBaseState{
 
 class SignupInputPhoneState extends SignupInputBaseState{
   String initValue = "+1";
+  List<CountryFlag> flags = CountryFlag.Flags();
+  late List<DropdownMenuItem<String>> items;
+
+  changeValue(String? value){
+      setState(() {
+          initValue = value as String;
+          widget.controller.setText(initValue + ' ');
+      });
+  }
+
+  @override
+  void initState() {
+      items = List.generate(flags.length, (index){
+        CountryFlag flag = flags[index];
+        return DropdownMenuItem(value: flag.code, child:  Padding( padding: const EdgeInsets.only(left: 8.0),  child: __getflag(flag.name),),);
+      });
+      widget.controller.setText(initValue);
+      widget.controller.addListener(() {
+          if(widget.controller.value.text.length < initValue.length + 1){
+              widget.controller.setText(initValue + " ");
+          }else if(widget.controller.value.text.length > initValue.length + 1){
+              String init = widget.controller.value.text;
+              int value = init.codeUnitAt(init.length - 1);
+              if(!(value >= 48 && value <= 57)){
+                  init = init.substring(0, init.length - 1);
+                  widget.controller.setText(init);
+              }
+          }
+      });
+      super.initState();
+  }
 
   Widget build_phone(){
-    List<DropdownMenuItem<String>> items = [
-      DropdownMenuItem(value: "+1", child:  Padding( padding: const EdgeInsets.only(left: 8.0),  child: Text("+1", style: TextStyle(color:  Color.fromARGB(255, 245, 160, 94), fontSize: 12),),),),
-      DropdownMenuItem(value: "+12", child:  Padding( padding: const EdgeInsets.only(left: 8.0),  child: Text("+12", style: TextStyle(color:  Color.fromARGB(255, 245, 160, 94), fontSize: 12),),),),
-      DropdownMenuItem(value: "+18", child:  Padding( padding: const EdgeInsets.only(left: 8.0),  child: Text("+18", style: TextStyle(color:  Color.fromARGB(255, 245, 160, 94), fontSize: 12),),),),
-      DropdownMenuItem(value: "+24", child:  Padding( padding: const EdgeInsets.only(left: 8.0),  child: Text("+24", style: TextStyle(color:  Color.fromARGB(255, 245, 160, 94), fontSize: 12),),),),
-      DropdownMenuItem(value: "+234", child:  Padding( padding: const EdgeInsets.only(left: 8.0),  child: Text("+234", style: TextStyle(color:  Color.fromARGB(255, 245, 160, 94), fontSize: 12),),),),
-      DropdownMenuItem(value: "+45", child:  Padding( padding: const EdgeInsets.only(left: 8.0),  child: Text("+45", style: TextStyle(color:  Color.fromARGB(255, 245, 160, 94), fontSize: 12),),),),
-      DropdownMenuItem(value: "+871", child:  Padding( padding: const EdgeInsets.only(left: 8.0),  child: Text("+871", style: TextStyle(color:  Color.fromARGB(255, 245, 160, 94), fontSize: 12),),),),
-    ];
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -150,7 +184,7 @@ class SignupInputPhoneState extends SignupInputBaseState{
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(width: 60, child: DropdownButtonHideUnderline(child: DropdownButton(value: initValue, items: items, onChanged: (value) =>{}))),
+              SizedBox(width: 60, child: DropdownButtonHideUnderline(child: DropdownButton(value: initValue, items: items, onChanged: changeValue))),
               Expanded(child:Input(hint: widget.hint, icon: widget.iconData, controller: controller.value, inputType: widget.inputType, iconSize: 16, textSize: 14,)),
             ]
         ),
@@ -174,8 +208,10 @@ class SignupInputPhoneState extends SignupInputBaseState{
       controller = Option.some(widget.controller);
       isOk = widget.check(controller.value.text);
       controller.value.addListener(() {
-        isOk = widget.check(controller.value.value.text);
-        widget.monitior(isOk);
+        setState(() {
+          isOk = widget.check(controller.value.value.text);
+          widget.monitior(isOk);
+        });
       });
     }
     return build_phone();

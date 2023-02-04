@@ -9,17 +9,25 @@ class Input extends StatefulWidget{
     final TextInputType inputType;
     final TextEditingController controller;
 
-    Input({Key? key, required this.hint, this.icon, required this.controller, this.usePrefix = true, this.iconSize = 24, this.textSize = 16, this.color = const Color.fromARGB(255, 245, 160, 94), this.inputType = TextInputType.text }) : super(key: key);
+    Input({Key? key, required this.hint, this.icon, required this.controller, this.usePrefix = true, this.iconSize = 18, this.textSize = 14, this.color = const Color.fromARGB(255, 245, 160, 94), this.inputType = TextInputType.text }) : super(key: key);
 
     @override
     State<StatefulWidget> createState()=> this.inputType == TextInputType.visiblePassword ? InputPasswordState() : InputTextState();
 }
 
 abstract class InputBaseState extends State<Input>{
-    bool __hide = false;
-    UnderlineInputBorder __getBorder(Color color){
-        return UnderlineInputBorder(
+    late bool __hide;
+
+   @override
+   void initState() {
+       __hide = widget.inputType == TextInputType.visiblePassword;
+       super.initState();
+   }
+
+    OutlineInputBorder __getBorder(Color color){
+        return OutlineInputBorder(
             borderSide: BorderSide(width: 1, style: BorderStyle.solid, color: color),
+            borderRadius: BorderRadius.all(Radius.circular(8))
         );
     }
 
@@ -60,9 +68,9 @@ class InputTextState extends InputBaseState{
 }
 
 class InputPasswordState extends InputBaseState{
+
     @override
     InputDecoration __getDecoration(){
-        __hide = true;
         IconButton? suffixIcon = widget.usePrefix ? IconButton(
             icon: Icon(__hide ? Icons.remove_red_eye : Icons.visibility_off , size: widget.iconSize),
             color: widget.color,

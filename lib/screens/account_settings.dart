@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:iconify_flutter/iconify_flutter.dart'; // For Iconify Widget
+import 'package:iconify_flutter/icons/mdi.dart';
+import 'package:iconify_flutter/icons/bi.dart';
 
 class AccountSettings extends StatefulWidget{
     @override
@@ -46,81 +49,106 @@ class __AccountSettingsState extends State<AccountSettings>{
                   ],),
                 ),
               Divider(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextButton(
+                  child: Row(
+                    children: [
+                      CircleAvatar( child: Iconify(Bi.cash_coin, size: 15, color: Colors.white), radius: 14,),
+                      SizedBox(width: 10,),
+                      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text("Manage Trusted Contacts", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87),),
+                        SizedBox(height: 8),
+                        Text("share your trip status with your loved onve s ina single tap", style: TextStyle(fontSize: 10, color: Colors.black87),),
+                      ],),
+                    ],
+                  ), onPressed: (){},
+                ),
+              ),
+              Divider(),
               TextButton(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text("Manage Trusted Contacts", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87),),
-                    SizedBox(height: 8),
-                    Text("share your trip status with your loved onve s ina single tap", style: TextStyle(fontSize: 10, color: Colors.black87),),
-                  ],),
+                  child: Row(
+                    children: [
+                      CircleAvatar( child: Iconify(Bi.cash_coin, size: 15, color: Colors.white), radius: 14,),
+                      SizedBox(width: 10,),
+                      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text("Verify Your Ride", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87),),
+                        SizedBox(height: 8),
+                        Text("use a PIN to make sure you get right car", style: TextStyle(fontSize: 10, color: Colors.black87),),
+                      ],),
+                    ],
+                  ),
                 ), onPressed: (){},
               ),
               Divider(),
               TextButton(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text("Verify Your Ride", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87),),
-                    SizedBox(height: 8),
-                    Text("use a PIN to make sure you get right car", style: TextStyle(fontSize: 10, color: Colors.black87),),
-                  ],),
+                  child: Row(
+                    children: [
+                      CircleAvatar( child: Iconify(Bi.cash_coin, size: 15, color: Colors.white), radius: 14,),
+                      SizedBox(width: 10,),
+                      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text("Notification", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87),),
+                        SizedBox(height: 8),
+                        Text("Manage your ride notication ", style: TextStyle(fontSize: 10, color: Colors.black87),),
+                      ],),
+                    ],
+                  ),
                 ), onPressed: (){},
               ),
               Divider(),
               TextButton(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text("Notification", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87),),
-                    SizedBox(height: 8),
-                    Text("Manage your ride notication ", style: TextStyle(fontSize: 10, color: Colors.black87),),
-                  ],),
+                  child: Row(
+                    children: [
+                      CircleAvatar( child: Iconify(Bi.cash_coin, size: 15, color: Colors.white), radius: 14,),
+                      SizedBox(width: 10,),
+                      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text("Edit  Profile", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87),),
+                        SizedBox(height: 8),
+                        Text("edit your profile", style: TextStyle(fontSize: 10, color: Colors.black87),),
+                      ],),
+                    ],
+                  ),
                 ), onPressed: (){},
               ),
               Divider(),
               TextButton(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text("Edit  Profile", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87),),
-                    SizedBox(height: 8),
-                    Text("edit your profile", style: TextStyle(fontSize: 10, color: Colors.black87),),
-                  ],),
+                  child: Row(
+                    children: [
+                      CircleAvatar( child: Iconify(Bi.cash_coin, size: 15, color: Colors.white), radius: 14,),
+                      SizedBox(width: 10,),
+                      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text("Change Password", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87),),
+                        SizedBox(height: 8),
+                        Text("change your pin", style: TextStyle(fontSize: 10, color: Colors.black87),),
+                      ],),
+                    ],
+                  ),
                 ), onPressed: (){},
               ),
               Divider(),
               TextButton(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text("Change Password", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87),),
-                    SizedBox(height: 8),
-                    Text("change your pin", style: TextStyle(fontSize: 10, color: Colors.black87),),
-                  ],),
-                ), onPressed: (){},
-              ),
-              Divider(),
-              TextButton(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text("Fund Wallet", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87),),
-                    SizedBox(height: 8),
-                    Text("fund your wallet by using your  ATM CARD or transfr", style: TextStyle(fontSize: 10, color: Colors.black87),),
-                  ],),
+                  child: Row(
+                    children: [
+                      CircleAvatar( child: Iconify(Bi.cash_coin, size: 15, color: Colors.white), radius: 14,),
+                      SizedBox(width: 10,),
+                      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text("Fund Wallet", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87),),
+                        SizedBox(height: 8),
+                        Text("fund your wallet by using your  ATM CARD or transfr", style: TextStyle(fontSize: 10, color: Colors.black87),),
+                      ],),
+                    ],
+                  ),
                 ), onPressed: (){ Navigator.pushNamed(context, "/main/wallet"); },
-              ),
-              Divider(),
-              TextButton(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text("Security", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87),),
-                    SizedBox(height: 8),
-                    Text("control your account security", style: TextStyle(fontSize: 10, color: Colors.black87),),
-                  ],),
-                ), onPressed: (){},
               ),
               Divider(),
             ],),

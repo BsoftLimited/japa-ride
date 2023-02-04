@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:japa/fragments/login.dart';
+import 'package:japa/fragments/cards.dart';
 import 'package:japa/fragments/splash.dart';
 import 'package:japa/utils/util.dart';
 
@@ -12,12 +12,12 @@ class Launcher extends StatefulWidget{
 
 class LauncherState extends State<Launcher>{
     int index = 0;
-    Option<Login> login = Option.none();
+    Option<Cards> cards = Option.none();
     Option<Splash> splash = Option.none();
 
     Widget render(){
-        if(login.is_none){
-            login = Option.some(const Login(key: Key("login"),));
+        if(cards.is_none){
+            cards = Option.some(Cards(key: Key("cards"),));
         }
 
         if(splash.is_none){
@@ -25,7 +25,7 @@ class LauncherState extends State<Launcher>{
               setState(() { index = index == 0 ? 1 : 0; });
             }),));
         }
-        return index == 0 ? splash.value : login.value;
+        return index == 0 ? splash.value : cards.value;
     }
 
     @override

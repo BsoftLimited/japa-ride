@@ -145,8 +145,7 @@ class HomeState extends State<Home>{
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Scaffold(
-      body: SingleChildScrollView(
+    return SingleChildScrollView(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           __init_header(),
           CarouselSlider(
@@ -199,8 +198,7 @@ class HomeState extends State<Home>{
             ],),
           )
         ],),
-      ),
-    );
+      );
   }
   
 }

@@ -11,8 +11,13 @@ class Active extends StatefulWidget{
 class ActiveState extends State<Active>{
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return null;
+    return Center( child:  Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.center, children: [
+        Image.asset("res/no_data.png", width: 150,),
+        SizedBox(height: 8,),
+        Text("You have no active booking", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+        SizedBox(height: 8,),
+        Text("You have no active booking at this time", style: TextStyle(fontSize: 12),),
+    ],),);
   }
   
 }

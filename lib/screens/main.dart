@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:japa/fragments/account.dart';
-import 'package:japa/fragments/home.dart';
+import 'package:japa/fragments/booking.dart';
+import 'package:japa/fragments/inbox.dart';
+import 'package:japa/fragments/profile.dart';
+import 'package:japa/fragments/wallet.dart';
+import 'package:japa/fragments/map.dart';
 
 class Main extends StatefulWidget{
   const Main({Key? key}): super(key: key);
@@ -21,13 +25,7 @@ class __MainState extends State<Main> with SingleTickerProviderStateMixin{
 
   @override
   void initState() {
-      __pages = <Widget>[
-          Home(isHideBottomNavbar: (isHide) =>{
-             setState(()=>{ __isVisble = !isHide })
-          }),
-        Center(child: Text("logs"),),
-        Account()
-      ];
+      __pages = <Widget>[ Map(), Booking(), Inbox(), Wallet(), Profile()];
   }
 
   @override
@@ -35,16 +33,21 @@ class __MainState extends State<Main> with SingleTickerProviderStateMixin{
     return Scaffold(
       //appBar: AppBar(title: const Text("Japa Ride"), elevation: 0, titleTextStyle: TextStyle(color: Colors.white70), toolbarTextStyle: TextStyle(color: Colors.white70),),
       body: IndexedStack(
-        children: __pages,
-        index: __selectedIndex
-      ),
+          children: __pages,
+          index: __selectedIndex
+        ),
       bottomNavigationBar: Offstage(
         offstage: !__isVisble,
         child: BottomNavigationBar(
+          selectedItemColor: const Color.fromARGB(255, 245, 160, 94), unselectedItemColor: Colors.black54,
+          selectedFontSize: 12, unselectedFontSize: 12, showUnselectedLabels: true, enableFeedback: false,
+          type: BottomNavigationBarType.fixed,
           items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home" ),
-            BottomNavigationBarItem(icon: Icon(Icons.menu_book_outlined), label: "Logs" ),
-            BottomNavigationBarItem(icon: Icon(Icons.account_circle_sharp), label: "Account" ),
+            BottomNavigationBarItem(icon: Icon(Icons.map_outlined), label: "Map" ),
+            BottomNavigationBarItem(icon: Icon(Icons.menu_book_outlined), label: "Booking" ),
+            BottomNavigationBarItem(icon: Icon(Icons.chat_outlined), label: "Inbox" ),
+            BottomNavigationBarItem(icon: Icon(Icons.wallet), label: "Wallet" ),
+            BottomNavigationBarItem(icon: Icon(Icons.account_circle_sharp), label: "Profile" ),
           ],
           currentIndex: __selectedIndex,
           onTap: __onItemTapped

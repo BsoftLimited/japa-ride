@@ -13,7 +13,14 @@ class RecoveryState extends State<Recovery>{
 
   Widget build_form(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Forgotten Password", style: TextStyle(color: Colors.white70),)),
+      appBar: AppBar(title: const Text("Forgotten Password", style: TextStyle(color: const Color.fromARGB(255, 245, 160, 94), fontWeight: FontWeight.w400, letterSpacing: 1.3)),
+        leading: Row(children: [
+          IconButton(onPressed: (){ Navigator.pop(context); }, iconSize: 22, icon: Icon(Icons.arrow_back, color: const Color.fromARGB(255, 245, 160, 94),)),
+          SizedBox(width: 2,),
+          Icon(Icons.phonelink_lock_outlined, size: 26, color: const Color.fromARGB(255, 245, 160, 94),),
+        ],),
+        leadingWidth: 70,
+        backgroundColor: Colors.white, elevation: 1,),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(left: 20, right:  20, top: 20),
@@ -28,13 +35,13 @@ class RecoveryState extends State<Recovery>{
               Text("Enter your registration email address",
                 style: TextStyle(color: Colors.black54, fontWeight: FontWeight.bold), textAlign: TextAlign.left,),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
+                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
                 child: Input(hint: "Email", icon: Icons.email, color: const Color.fromARGB(255, 245, 160, 94), controller: controller),
               ),
               const SizedBox(height: 15,),
               Center(
                 child: MaterialButton(onPressed: validate,
-                  child: Padding( padding: EdgeInsets.only(left: 30, right:  30, top: 10, bottom: 10), child: Text("Reset Password", style: TextStyle(color: Colors.white70),)),
+                  child: Padding( padding: EdgeInsets.only(left: 40, right:  40, top: 14, bottom: 14), child: Text("Reset Password", style: TextStyle(color: Colors.white),)),
                   color: const Color.fromARGB(255, 245, 160, 94),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
                 ),
@@ -47,7 +54,14 @@ class RecoveryState extends State<Recovery>{
 
   Widget build_verification(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("Verify Phone Number", style: TextStyle(color: Colors.white70),)),
+        appBar: AppBar(title: const Text("Verify Phone Number", style: TextStyle(color: const Color.fromARGB(255, 245, 160, 94), fontWeight: FontWeight.w400, letterSpacing: 1.3)),
+          leading: Row(children: [
+            IconButton(onPressed: (){ Navigator.pop(context); }, iconSize: 22, icon: Icon(Icons.arrow_back, color: const Color.fromARGB(255, 245, 160, 94),)),
+            SizedBox(width: 2,),
+            Icon(Icons.lock_clock_outlined, size: 26, color: const Color.fromARGB(255, 245, 160, 94),),
+          ],),
+          leadingWidth: 70,
+          backgroundColor: Colors.white, elevation: 1,),
         body: SafeArea(
           child: Column(
             children: [
@@ -77,8 +91,9 @@ class RecoveryState extends State<Recovery>{
               const SizedBox(height: 15,),
               MaterialButton(onPressed: ()=>{},
                   color: const Color.fromARGB(255, 245, 160, 94),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
                   child: const Padding(
-                    padding: EdgeInsets.only(top: 12, bottom: 12, right: 30, left: 30),
+                    padding: EdgeInsets.only(left: 40, right:  40, top: 14, bottom: 14),
                     child: Text("Submit", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                   )),
             ],),
