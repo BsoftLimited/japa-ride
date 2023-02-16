@@ -45,7 +45,7 @@ class __JapaRide extends State<JapaRide>{
                 "/recovery" : (context) => Recovery(),
                 "/main/settings": (context) => AccountSettings(),
                 "/main": (context) => const Main(),
-                "/test" : (context) => MyApp(),
+                "/test" : (context) => OrderTrackingPage(),
             },
         );
     }

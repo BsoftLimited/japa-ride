@@ -1,9 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
-import 'package:japa/providers/map_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -15,71 +12,106 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 enum Mode{ Select, Search }
 
 class TopButton extends StatelessWidget{
-  String text;
-  Function() click;
-  IconData icon;
-  TopButton({required this.icon, required this.text, required this.click});
+  final String text;
+  final Function() click;
+  final IconData icon;
+  const TopButton({super.key, required this.icon, required this.text, required this.click});
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
         onPressed: click, style: ElevatedButton.styleFrom(
             primary: Colors.white,
-            side: BorderSide(width:1, color: const Color.fromARGB(255, 245, 160, 94)), //border width and color
+            side: const BorderSide(width:1, color: Color.fromARGB(255, 245, 160, 94)), //border width and color
             elevation: 3, //elevation of button
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10)),
-            padding: EdgeInsets.all(10) //content padding inside button
+            padding: const EdgeInsets.all(10) //content padding inside button
         ),
         child: Row(children: [
           Icon(icon, size: 18, color: const Color.fromARGB(255, 245, 160, 94),),
-          SizedBox(width: 2),
-          Text(text, style: TextStyle(fontSize: 12, color: const Color.fromARGB(255, 245, 160, 94)),)],));
+          const SizedBox(width: 2),
+          Text(text, style: const TextStyle(fontSize: 12, color: Color.fromARGB(255, 245, 160, 94)),)],));
   }
 }
 
 class CircleButton extends StatelessWidget{
-    Function() onPressed;
-    IconData icon;
+    final Function() onPressed;
+    final IconData icon;
 
-    CircleButton({required this.onPressed, required this.icon});
+    const CircleButton({super.key, required this.onPressed, required this.icon});
 
     @override
     Widget build(BuildContext context) {
-        return MaterialButton(onPressed: this.onPressed, color:  const Color.fromARGB(255, 245, 160, 94),
-            padding: EdgeInsets.all(12), shape: CircleBorder(), minWidth: 20,
+        return MaterialButton(onPressed: onPressed, color:  const Color.fromARGB(255, 245, 160, 94),
+            padding: const EdgeInsets.all(12), shape: const CircleBorder(), minWidth: 20,
             child: Icon( icon, color: Colors.white, size: 18,));
     }
 }
 
 class Map extends StatefulWidget {
+  const Map({super.key});
+
   @override
-  __MapState createState() => __MapState();
+  State<Map> createState() => __MapState();
 }
 
 class __MapState extends State<Map> {
-  Completer<GoogleMapController> _controller = Completer();
-  late PanelController __panelController = PanelController();
+  final Completer<GoogleMapController> __controller = Completer();
+  final PanelController __panelController = PanelController();
   BPanelController bPanelController = BPanelController();
 
-  LocationData? __currentLocation;
-  CameraPosition? __cameraPosition;
-  BitmapDescriptor? clientBitmap;
+  Option<LatLng> destination = Option.none(), start = Option.none();
+  List<LatLng> polylineCoordinates = [];
+  Option<LocationData> currentLocation = Option.none();
+  Option<CameraPosition> cameraPosition = Option.none();
+
+  BitmapDescriptor sourceIcon = BitmapDescriptor.defaultMarker;
+  BitmapDescriptor destinationIcon = BitmapDescriptor.defaultMarker;
+  BitmapDescriptor currentIcon = BitmapDescriptor.defaultMarker;
   String? mapStyle;
 
-  Future<void> __getCurrentLocation() async {
-    Location location = Location();
-    try {
-      LocationData currentLocation = await location.getLocation();
-      if(currentLocation != null) {
-        __currentLocation = currentLocation;
-        __cameraPosition = CameraPosition(target: LatLng( currentLocation.latitude!, currentLocation.longitude!), zoom: 16.0);
-        setState(()=>{});
-      }
 
-    } on Exception catch (e) {
-      print('Could not get location: ${e.toString()}');
-    }
+  void getPolyPoints() async {
+      if(start.is_some && destination.is_some){
+          PolylinePoints polylinePoints = PolylinePoints();
+          PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+              Util.mapAPIKey,
+              PointLatLng(start.value.latitude, start.value.longitude),
+              PointLatLng(destination.value.latitude, destination.value.longitude),
+          );
+
+          if (result.points.isNotEmpty) {
+              for (var point in result.points) {
+                polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+              }
+              setState(() {});
+          }
+      }
+  }
+  void getCurrentLocation() async{
+      try {
+        Location location = Location();
+        location.getLocation().then((value) {
+          currentLocation = Option.some(value);
+          cameraPosition = Option.some(CameraPosition(
+              target: LatLng(value.latitude!, value.longitude!), zoom: 16.0));
+        });
+        //GoogleMapController googleMapController = await __controller.future;
+        location.onLocationChanged.listen((value) {
+          currentLocation = Option.some(value);
+          //googleMapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(zoom: 13.5, target: LatLng(value.latitude!, value.longitude!))));
+          setState(() {});
+        });
+      }on Exception catch (e) {
+          log('Could not get location: ${e.toString()}');
+      }
+  }
+
+  void setCustomMakerIcons(){
+    //BitmapDescriptor.fromAssetImage(ImageConfiguration.empty, 'res/pin.png').then((value) => { sourceIcon = value });
+    //BitmapDescriptor.fromAssetImage(ImageConfiguration.empty, 'res/pin.png').then((value) => { destinationIcon = value });
+    //BitmapDescriptor.fromAssetImage(ImageConfiguration.empty, 'res/position.png').then((value) => { currentIcon = value });
   }
 
   void top_clicked(String value){
@@ -90,59 +122,49 @@ class __MapState extends State<Map> {
 
   @override
   void initState() {
-      BitmapDescriptor.fromAssetImage( ImageConfiguration(size: Size(48, 48)), 'res/location.png').then((onValue) { clientBitmap = onValue;});
-      SchedulerBinding.instance?.addPostFrameCallback((_) {
-          rootBundle.loadString(FileConstants.mapStyle).then((string) { mapStyle = string; });
-      });
-      __getCurrentLocation();
+      getCurrentLocation();
+      setCustomMakerIcons();
       super.initState();
   }
 
-  Future<Set<Marker>> generateMarkers(List<LatLng> positions) async {
-      List<Marker> markers = <Marker>[];
-      for (final location in positions) {
-          final icon = await BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(24, 24)), 'assets/location.png');
-
-          final marker = Marker(
-              markerId: MarkerId(location.toString()),
-              position: LatLng(location.latitude, location.longitude),
-              icon: icon,
-          );
-          markers.add(marker);
-    }
-    return markers.toSet();
-  }
-
-  Set<Marker> initMarker(LocationData locationData){
-      Set<Marker> markers = Set();
-      markers.add(Marker(
-          markerId: MarkerId("current location"),
-          position: LatLng(locationData.latitude!, locationData.longitude!),
-          infoWindow: InfoWindow(title: "Your Location"),
-          icon: clientBitmap == null ? BitmapDescriptor.defaultMarker : (clientBitmap as BitmapDescriptor) ));
-      return markers;
+  Set<Marker> initMarkers(){
+      Set<Marker> init = {};
+      init.add(Marker(markerId: const MarkerId("location"), position: fromCurrent()!, icon: currentIcon));
+      if(start.is_some && destination.is_some){
+          getPolyPoints();
+          init.add(Marker(markerId: const MarkerId("source"), position: start.value, icon: sourceIcon));
+          init.add(Marker(markerId: const MarkerId("destination"), position: destination.value, icon: destinationIcon),);
+      }
+      return init;
   }
 
   Widget initMap(){
-    if(__currentLocation == null){
-      return Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        SpinKitFoldingCube(color: Color.fromARGB(255, 245, 160, 94),),
-        SizedBox(height: 20),
-        Text("loading Map, please wait..", style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w400, letterSpacing: 1.5, fontSize: 14),),
+    if(currentLocation.is_none){
+      return Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, children: const [
+          SpinKitFoldingCube(color: Color.fromARGB(255, 245, 160, 94), size: 36,),
+          SizedBox(height: 18),
+          Text("loading Map, please wait..", style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w400, letterSpacing: 1.5, fontSize: 12),),
       ],),);
     }else{
-      CameraPosition cameraPosition = __cameraPosition as CameraPosition;
       return GoogleMap(
           mapType: MapType.normal,
-          initialCameraPosition: cameraPosition,
-          onMapCreated: (GoogleMapController controller) { _controller.complete(controller); },
-          markers: initMarker(__currentLocation as LocationData),
-          onCameraMove: (CameraPosition position) {
+          initialCameraPosition: cameraPosition.value,
+          onMapCreated: (GoogleMapController controller) { __controller.complete(controller); },
+          markers: initMarkers(),
+          /*onCameraMove: (CameraPosition position) {
             Provider.of<MapProvider>(context, listen: false).updateCurrentLocation(
-              LatLng(position.target.latitude, position.target.longitude));
-          },
+              LatLng(position.target.latitude, position.target.longitude));},*/
       );
     }
+  }
+
+  void clear(){
+      setState(() {
+          start = Option.none();
+          destination = Option.none();
+          polylineCoordinates.clear();
+
+      });
   }
 
   @override
@@ -151,7 +173,7 @@ class __MapState extends State<Map> {
       minHeight: 70, backdropEnabled: true, controller: __panelController,
       onPanelClosed: (){ log("closed at ${__panelController.panelPosition}"); setState(() { }); },
         //onPanelOpened: (){ log("opened at ${__panelController.panelPosition}"); setState(() { __isOpened = true; }); },
-      borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+      borderRadius: const BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
       body: Stack(
               children:[
                 initMap(),
@@ -163,15 +185,15 @@ class __MapState extends State<Map> {
                         padding: const EdgeInsets.all(8.0),
                         child: Row(children: [
                           TopButton(click: ()=>top_clicked("Home"), text: "Home", icon: Icons.home_outlined,),
-                          SizedBox(width: 8,),
+                          const SizedBox(width: 8,),
                           TopButton(click: ()=>top_clicked("Markets"), text: "Markets", icon: Icons.shopping_cart_outlined,),
-                          SizedBox(width: 8,),
+                          const SizedBox(width: 8,),
                           TopButton(click: ()=>top_clicked("Resturants"), text: "Resturants", icon: Icons.restaurant_menu_outlined,),
-                          SizedBox(width: 8,),
+                          const SizedBox(width: 8,),
                           TopButton(click: ()=>top_clicked("Bars"), text: "Bars", icon: Icons.wine_bar),
-                          SizedBox(width: 8,),
+                          const SizedBox(width: 8,),
                           TopButton(click: ()=>top_clicked("Schools"), text: "Schools", icon: Icons.school_outlined,),
-                          SizedBox(width: 8,),
+                          const SizedBox(width: 8,),
                           TopButton(click: ()=>top_clicked("Banks"), text: "Banks", icon: Icons.monetization_on_outlined,),
                         ],),
                       ),
@@ -181,9 +203,9 @@ class __MapState extends State<Map> {
                       child: Column( mainAxisSize: MainAxisSize.min,
                         children: [
                           CircleButton(onPressed: (){ bPanelController.openLocate(); }, icon: Icons.bookmarks_outlined),
-                          SizedBox(height: 10,),
+                          const SizedBox(height: 10,),
                           CircleButton(onPressed: (){ bPanelController.openSearch(); }, icon: Icons.search_outlined,),
-                          SizedBox(height: 10,),
+                          const SizedBox(height: 10,),
                           CircleButton(onPressed: __goToMe, icon: Icons.location_searching_sharp,),
                         ],
                       ),
@@ -193,24 +215,24 @@ class __MapState extends State<Map> {
               ],
           ),
         collapsed: Container(
-            alignment: Alignment.topCenter, padding: EdgeInsets.only(top: 3),
-            child: SizedBox(width: 40, height: 5, child: Divider(color: Colors.black54, thickness: 2,),)),
-        panel: Panel(currentLocation: initCurrentLocation(), panelController: __panelController, bPanelController: bPanelController,),
+            alignment: Alignment.topCenter, padding: const EdgeInsets.only(top: 3),
+            child: const SizedBox(width: 40, height: 5, child: Divider(color: Colors.black54, thickness: 2,),)),
+        panel: Panel(currentLocation: fromCurrent(), panelController: __panelController, bPanelController: bPanelController,),
     );
   }
 
-  LatLng? initCurrentLocation(){
-      if(__currentLocation != null) {
-        LocationData locationData = __currentLocation as LocationData;
-        return LatLng(locationData.latitude!, locationData.longitude!);
-      }
+  LatLng? fromCurrent(){
+    if(currentLocation.is_some){
+      double lat = currentLocation.value.latitude!;
+      double lng = currentLocation.value.longitude!;
+      return LatLng(lat, lng);
+    }
   }
 
   Future<void> __goToMe() async {
-    if(__cameraPosition != null){
-      final GoogleMapController controller = await _controller.future;
-      CameraPosition cameraPosition = __cameraPosition as CameraPosition;
-      controller.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+    if(cameraPosition.is_some){
+      final GoogleMapController controller = await __controller.future;
+      controller.animateCamera(CameraUpdate.newCameraPosition(cameraPosition.value));
     }
   }
 }
