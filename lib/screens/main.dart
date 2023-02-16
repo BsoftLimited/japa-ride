@@ -32,10 +32,12 @@ class __MainState extends State<Main> with SingleTickerProviderStateMixin{
   Widget build(BuildContext context) {
     return Scaffold(
       //appBar: AppBar(title: const Text("Japa Ride"), elevation: 0, titleTextStyle: TextStyle(color: Colors.white70), toolbarTextStyle: TextStyle(color: Colors.white70),),
-      body: IndexedStack(
-          children: __pages,
-          index: __selectedIndex
-        ),
+      body: SafeArea(
+        child: IndexedStack(
+            children: __pages,
+            index: __selectedIndex
+          ),
+      ),
       bottomNavigationBar: Offstage(
         offstage: !__isVisble,
         child: BottomNavigationBar(

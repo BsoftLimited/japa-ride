@@ -1,8 +1,14 @@
 import 'dart:async';
 import 'dart:developer';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
+import 'package:japa/providers/map_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:japa/components/panel.dart';
+import 'package:japa/utils/util.dart';
 import 'package:location/location.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -23,10 +29,11 @@ class TopButton extends StatelessWidget{
             elevation: 3, //elevation of button
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10)),
-            padding: EdgeInsets.all(20) //content padding inside button
+            padding: EdgeInsets.all(10) //content padding inside button
         ),
         child: Row(children: [
-          Icon(icon, size: 14, color: const Color.fromARGB(255, 245, 160, 94),),
+          Icon(icon, size: 18, color: const Color.fromARGB(255, 245, 160, 94),),
+          SizedBox(width: 2),
           Text(text, style: TextStyle(fontSize: 12, color: const Color.fromARGB(255, 245, 160, 94)),)],));
   }
 }
@@ -40,7 +47,7 @@ class CircleButton extends StatelessWidget{
     @override
     Widget build(BuildContext context) {
         return MaterialButton(onPressed: this.onPressed, color:  const Color.fromARGB(255, 245, 160, 94),
-            padding: EdgeInsets.all(14), shape: CircleBorder(), minWidth: 20,
+            padding: EdgeInsets.all(12), shape: CircleBorder(), minWidth: 20,
             child: Icon( icon, color: Colors.white, size: 18,));
     }
 }
@@ -52,20 +59,27 @@ class Map extends StatefulWidget {
 
 class __MapState extends State<Map> {
   Completer<GoogleMapController> _controller = Completer();
-  late PanelController __panelController;
+  late PanelController __panelController = PanelController();
   BPanelController bPanelController = BPanelController();
 
-  static final CameraPosition _kGooglePlex = CameraPosition( target: LatLng(37.42796133580664, -122.085749655962), zoom: 14.4746);
-  LocationData? _currentLocation;
-  var location = new Location();
+  LocationData? __currentLocation;
+  CameraPosition? __cameraPosition;
+  BitmapDescriptor? clientBitmap;
+  String? mapStyle;
 
-  Future<void> _getCurrentLocation() async {
+  Future<void> __getCurrentLocation() async {
+    Location location = Location();
     try {
-      _currentLocation = await location.getLocation();
+      LocationData currentLocation = await location.getLocation();
+      if(currentLocation != null) {
+        __currentLocation = currentLocation;
+        __cameraPosition = CameraPosition(target: LatLng( currentLocation.latitude!, currentLocation.longitude!), zoom: 16.0);
+        setState(()=>{});
+      }
+
     } on Exception catch (e) {
       print('Could not get location: ${e.toString()}');
     }
-    setState(() {});
   }
 
   void top_clicked(String value){
@@ -76,21 +90,59 @@ class __MapState extends State<Map> {
 
   @override
   void initState() {
-    __panelController = PanelController();
-    super.initState();
-    _getCurrentLocation();
+      BitmapDescriptor.fromAssetImage( ImageConfiguration(size: Size(48, 48)), 'res/location.png').then((onValue) { clientBitmap = onValue;});
+      SchedulerBinding.instance?.addPostFrameCallback((_) {
+          rootBundle.loadString(FileConstants.mapStyle).then((string) { mapStyle = string; });
+      });
+      __getCurrentLocation();
+      super.initState();
   }
 
-  Set<Marker> initMarker(){
-    Set<Marker> markers = Set();
-    if(_currentLocation != null){
-       markers.add(Marker(
-          markerId: MarkerId("curr_loc"),
-          position: LatLng(_currentLocation?.latitude as double, _currentLocation?.longitude as double),
-          infoWindow: InfoWindow(title: "Your Location"),
-          icon: BitmapDescriptor.defaultMarker));
+  Future<Set<Marker>> generateMarkers(List<LatLng> positions) async {
+      List<Marker> markers = <Marker>[];
+      for (final location in positions) {
+          final icon = await BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(24, 24)), 'assets/location.png');
+
+          final marker = Marker(
+              markerId: MarkerId(location.toString()),
+              position: LatLng(location.latitude, location.longitude),
+              icon: icon,
+          );
+          markers.add(marker);
     }
-    return markers;
+    return markers.toSet();
+  }
+
+  Set<Marker> initMarker(LocationData locationData){
+      Set<Marker> markers = Set();
+      markers.add(Marker(
+          markerId: MarkerId("current location"),
+          position: LatLng(locationData.latitude!, locationData.longitude!),
+          infoWindow: InfoWindow(title: "Your Location"),
+          icon: clientBitmap == null ? BitmapDescriptor.defaultMarker : (clientBitmap as BitmapDescriptor) ));
+      return markers;
+  }
+
+  Widget initMap(){
+    if(__currentLocation == null){
+      return Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        SpinKitFoldingCube(color: Color.fromARGB(255, 245, 160, 94),),
+        SizedBox(height: 20),
+        Text("loading Map, please wait..", style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w400, letterSpacing: 1.5, fontSize: 14),),
+      ],),);
+    }else{
+      CameraPosition cameraPosition = __cameraPosition as CameraPosition;
+      return GoogleMap(
+          mapType: MapType.normal,
+          initialCameraPosition: cameraPosition,
+          onMapCreated: (GoogleMapController controller) { _controller.complete(controller); },
+          markers: initMarker(__currentLocation as LocationData),
+          onCameraMove: (CameraPosition position) {
+            Provider.of<MapProvider>(context, listen: false).updateCurrentLocation(
+              LatLng(position.target.latitude, position.target.longitude));
+          },
+      );
+    }
   }
 
   @override
@@ -102,11 +154,7 @@ class __MapState extends State<Map> {
       borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
       body: Stack(
               children:[
-                GoogleMap(
-                  mapType: MapType.normal,
-                  initialCameraPosition: _kGooglePlex,
-                  onMapCreated: (GoogleMapController controller) { _controller.complete(controller); },
-                  markers: initMarker()),
+                initMap(),
                 Column( crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     SingleChildScrollView(
@@ -147,18 +195,22 @@ class __MapState extends State<Map> {
         collapsed: Container(
             alignment: Alignment.topCenter, padding: EdgeInsets.only(top: 3),
             child: SizedBox(width: 40, height: 5, child: Divider(color: Colors.black54, thickness: 2,),)),
-        panel: Panel(currentLocation: initCurrentLoaction(), panelController: __panelController, bPanelController: bPanelController,),
+        panel: Panel(currentLocation: initCurrentLocation(), panelController: __panelController, bPanelController: bPanelController,),
     );
   }
 
-  LatLng? initCurrentLoaction(){
-      if( _currentLocation != null ){
-        return LatLng(_currentLocation?.latitude as double, _currentLocation?.longitude as double);
+  LatLng? initCurrentLocation(){
+      if(__currentLocation != null) {
+        LocationData locationData = __currentLocation as LocationData;
+        return LatLng(locationData.latitude!, locationData.longitude!);
       }
   }
 
   Future<void> __goToMe() async {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(_kGooglePlex));
+    if(__cameraPosition != null){
+      final GoogleMapController controller = await _controller.future;
+      CameraPosition cameraPosition = __cameraPosition as CameraPosition;
+      controller.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+    }
   }
 }

@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+
+class FileConstants{
+    static final String mapStyle = '';
+}
+
 class CountryFlag{
     String name, code;
 
