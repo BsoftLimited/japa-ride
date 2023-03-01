@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart'; // For Iconify Widget
 import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:iconify_flutter/icons/bi.dart';
+import 'package:japa/items/data.dart';
+import 'package:japa/items/user.dart';
 
 class AccountSettings extends StatefulWidget{
     @override
@@ -9,6 +11,8 @@ class AccountSettings extends StatefulWidget{
 }
 
 class __AccountSettingsState extends State<AccountSettings>{
+    User user = Data.instance().user;
+
     @override
     Widget build(BuildContext context) {
         return Scaffold(
@@ -37,11 +41,11 @@ class __AccountSettingsState extends State<AccountSettings>{
                       child: CircleAvatar(backgroundImage: AssetImage("res/ceo.jpg"), radius: 30.0,),
                     ),
                     Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text("Okelekle Nobel", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),),
+                      Text("${user.surname} ${user.name}", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),),
                       SizedBox(height: 4,),
-                      Text("+2347087952034", style: TextStyle(fontSize: 12)),
+                      Text("${user.phone}", style: TextStyle(fontSize: 12)),
                       SizedBox(height: 4,),
-                      Text("okelekelenobel@gmail.com", style: TextStyle(fontSize: 12)),
+                      Text("${user.email}", style: TextStyle(fontSize: 12)),
                     ],)),
                     TextButton(onPressed: (){  }, child: Row(children: [
                       CircleAvatar( child: Icon(Icons.edit_outlined, size: 15, color: Colors.white), radius: 14,),

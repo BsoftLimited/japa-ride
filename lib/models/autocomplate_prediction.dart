@@ -13,21 +13,14 @@ class AutocompletePrediction {
   /// [reference] contains reference.
   final String? reference;
 
-  AutocompletePrediction({
-    this.description,
-    this.structuredFormatting,
-    this.placeId,
-    this.reference,
-  });
+  AutocompletePrediction({this.description, this.structuredFormatting, this.placeId, this.reference,});
 
   factory AutocompletePrediction.fromJson(Map<String, dynamic> json) {
     return AutocompletePrediction(
       description: json['description'] as String?,
       placeId: json['place_id'] as String?,
       reference: json['reference'] as String?,
-      structuredFormatting: json['structured_formatting'] != null
-          ? StructuredFormatting.fromJson(json['structured_formatting'])
-          : null,
+      structuredFormatting: json['structured_formatting'] != null ? StructuredFormatting.fromJson(json['structured_formatting']) : null,
     );
   }
 }

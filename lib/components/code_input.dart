@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class CodeInput extends StatefulWidget{
   @override
@@ -24,10 +23,7 @@ class CodeInputState extends State<CodeInput>{
     final defaultPinTheme = PinTheme(
       width: 40,
       height: 40,
-      textStyle: GoogleFonts.poppins(
-        fontSize: 16,
-        color: const Color.fromARGB(255, 245, 160, 94),
-      ),
+
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(19),
         border: Border.all(color: borderColor),

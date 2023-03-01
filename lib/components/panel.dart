@@ -1,8 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:japa/components/booking_panel.dart';
 import 'package:japa/components/search_panel.dart';
+import 'package:japa/items/location.dart';
 import 'package:japa/models/autocomplate_prediction.dart';
+import 'package:japa/utils/network_util.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 enum PanelMode{ Search, Locate}
@@ -36,9 +40,10 @@ class Panel extends StatefulWidget{
     LatLng? currentLocation;
     PanelMode? initMode;
     Selecting? initSelecting;
-    LatLng? location, destination;
+    double distance;
+    void Function(CustonLocation location, CustonLocation destination) showRoute;
 
-    Panel({required this.bPanelController, required this.panelController, required this.currentLocation, this.initMode, this.initSelecting, this.destination, this.location });
+    Panel({required this.bPanelController, required this.panelController, required this.currentLocation, this.initMode, this.initSelecting, required this.showRoute, required this.distance });
 
     @override
     State<StatefulWidget> createState() => PanelState();
@@ -47,7 +52,7 @@ class Panel extends StatefulWidget{
 class PanelState extends State<Panel>{
     late PanelMode __mode;
     late Selecting __selecting;
-
+    CustonLocation? location, destination;
 
     @override
     void initState() {
@@ -57,10 +62,21 @@ class PanelState extends State<Panel>{
         widget.bPanelController.__setPanelState(this);
     }
 
-    void searchSelected(AutocompletePrediction prediction){
-        if(__selecting == Selecting.Destination){
-
-        }
+    void searchSelected(AutocompletePrediction prediction) {
+        log("search was clicked");
+        NetworkUtil.fetchPlaceDetails(prediction.placeId!).then((value) {
+            if(__selecting == Selecting.Location){
+                location = CustonLocation(address: prediction.description!, name: prediction.structuredFormatting!.mainText!, latLng: value!);
+            }else if(__selecting == Selecting.Destination){
+                destination = CustonLocation(address: prediction.description!, name: prediction.structuredFormatting!.mainText!, latLng: value!);
+            }
+            setState(() {
+                __mode = PanelMode.Locate;
+            });
+            if(location != null && destination != null){
+                widget.showRoute(location!, destination!);
+            }
+        });
     }
 
     void search(Selecting selecting){
@@ -88,7 +104,7 @@ class PanelState extends State<Panel>{
                       setState(() { __selecting = Selecting.Destination; });
                       widget.panelController.open();
                   }
-              },), BookingPanel(search: search,) ],
+              },), BookingPanel(search: search, destination: destination, location: location, distance: widget.distance,) ],
         );
     }
 }

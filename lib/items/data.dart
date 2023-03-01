@@ -24,7 +24,7 @@ class Data extends Item{
         __data = Option.some(Data.__new(user: user));
     }
 
-    static void initialize(BuildContext context, String data){
+    static void initialize(BuildContext context, String data, void Function() finished){
         Loading.Start(context: context, message: "Initializing, please wait"); log("initiliazation was called");
         try{
         InitService service = InitService(listener: (suceeded, response, request){
@@ -33,8 +33,9 @@ class Data extends Item{
                 Map<String, dynamic> init = json.decode(response) as  Map<String, dynamic>;
 
                 Data.create(init);
-                Navigator.pushReplacementNamed(context, "/main");
+                finished();
             }else{
+                log("${response}");
                 Map<String, dynamic> init = json.decode(response)[0];
                 Status.Start(context: context, status: suceeded, message: JsonHelper.getString(init["message"]));
                 log("Error:  $response");

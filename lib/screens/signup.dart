@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:japa/components/signup_input.dart';
 import 'package:japa/fragments/Status.dart';
+import 'package:japa/items/data.dart';
 import 'dart:developer';
 import "dart:convert" show json;
 
 import 'package:japa/screens/loading.dart';
+import 'package:japa/screens/vehicle_signup.dart';
 import 'package:japa/services/signup_service.dart';
 import 'package:japa/utils/util.dart';
 
@@ -46,14 +48,23 @@ class SignupFormState extends State<SignupForm>{
             "name" : fullName.value.text,
             "email" : email.value.text,
             "phone" : phone.value.text.replaceAll(" ", ""),
-            "user_type" : __as == SignupAs.Client ? "client" : "driver",
+            "user_type" : "client",
             "username" : username.value.text,
             "password" : password.value.text };
 
         SignUpService service = SignUpService(listener: (suceeded, response, request){
           Loading.Stop(context);
           if(suceeded){
-              Navigator.pushReplacementNamed(context, "/main");
+              if(__as == SignupAs.Client) {
+                Data.initialize(context, response, ()=>Navigator.pushReplacementNamed(context, '/main'));
+              }else{
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => VehicleSignup(id: json.decode(response)["id"]),
+                  ),
+                );
+              }
           }else{
               Map<String, dynamic> init = json.decode(response)[0];
               Status.Start(context: context, status: suceeded, message: JsonHelper.getString(init["message"]));
@@ -69,7 +80,7 @@ class SignupFormState extends State<SignupForm>{
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                     Row(mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.max, crossAxisAlignment: CrossAxisAlignment.center, children: [
@@ -126,7 +137,7 @@ class SignupFormState extends State<SignupForm>{
                     ),
                   const SizedBox(height: 15,),
                     SignUpInput(
-                        hint: "Phone", information: "Your Phone must be active", inputType: TextInputType.phone, controller: phone,
+                        hint: "Phone", information: "Your Phone number must be active", inputType: TextInputType.phone, controller: phone,
                         monitior: (value){
                           isPhoneOk = value;
                           check();
@@ -159,11 +170,17 @@ class SignupFormState extends State<SignupForm>{
                           ),
                         ),
                     ),
-                    const SizedBox(height: 15,),
-                    MaterialButton(onPressed: isOk ? signup : null,
-                        child: Padding( padding: EdgeInsets.only(left: 30, right:  30, top: 10, bottom: 10), child: Text("submit", style: TextStyle(color: Colors.white70),)),
-                        color: const Color.fromARGB(255, 245, 160, 94), disabledColor: Colors.brown,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+                    const SizedBox(height: 8,),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: MaterialButton(onPressed: isOk ? signup : null,
+                              child: Padding( padding: EdgeInsets.only(left: 30, right:  30, top: 15, bottom: 15), child: Text("submit", style: TextStyle(color: Colors.white70),)),
+                              color: const Color.fromARGB(255, 245, 160, 94), disabledColor: Colors.brown,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 5,),
                     Container(alignment: AlignmentDirectional.topCenter,
@@ -199,7 +216,7 @@ class __SigupState extends State<Signup>{
               ],),
               leadingWidth: 70,
               backgroundColor: Colors.white, elevation: 1,),
-            body: SafeArea( child: Center( child: SignupForm())),
+            body: SafeArea( child: SingleChildScrollView(child: SignupForm())),
         );
     }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:japa/components/input.dart';
+import 'package:japa/items/user.dart';
 import 'package:japa/utils/util.dart';
 import 'package:pinput/pinput.dart';
 
@@ -142,7 +142,7 @@ class SignupInputPasswordState extends SignupInputBaseState{
 }
 
 class SignupInputPhoneState extends SignupInputBaseState{
-  String initValue = "+1";
+  String initValue = "+234";
   List<CountryFlag> flags = CountryFlag.Flags();
   late List<DropdownMenuItem<String>> items;
 

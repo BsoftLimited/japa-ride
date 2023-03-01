@@ -7,6 +7,7 @@ import 'package:japa/screens/loading.dart';
 import 'package:japa/screens/main.dart';
 import 'package:japa/screens/my.dart';
 import 'package:japa/screens/signup.dart';
+import 'package:japa/screens/vehicle_signup.dart';
 
 void main() =>runApp(const JapaRide());
 
@@ -35,7 +36,7 @@ class __JapaRide extends State<JapaRide>{
         return MaterialApp(
             title: 'Japa Ride',
             theme: ThemeData(primarySwatch: MaterialColor( const Color.fromARGB(255, 245, 160, 94).value, swatch)),
-            initialRoute: "/main",
+            initialRoute: "/",
             debugShowCheckedModeBanner: false,
             routes: {
                 "/" :(context) => const Launcher(),
@@ -45,6 +46,7 @@ class __JapaRide extends State<JapaRide>{
                 "/recovery" : (context) => Recovery(),
                 "/main/settings": (context) => AccountSettings(),
                 "/main": (context) => const Main(),
+                "/vehicle": (context) => VehicleSignup(),
                 "/test" : (context) => OrderTrackingPage(),
             },
         );

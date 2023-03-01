@@ -27,13 +27,15 @@ class LoginFormState extends State<LoginForm> {
 
       LoginService service = LoginService(listener: (suceeded, response, request){
           Loading.Stop(context);
-          if(suceeded){
-              Data.initialize(context, response);
-          }else{
-              Map<String, dynamic> init = json.decode(response)[0];
-              Status.Start(context: context, status: suceeded, message: JsonHelper.getString(init["message"]));
-          }
           log("$response");
+          if(suceeded){
+              Data.initialize(context, response, ()=>Navigator.pushReplacementNamed(context, '/main'));
+          }else {
+            Map<String, dynamic> init = json.decode(response)[0];
+            Status.Start(context: context,
+                status: suceeded,
+                message: JsonHelper.getString(init["message"]));
+          }
       });
       service.start(params: params);
     }
@@ -63,6 +65,7 @@ class LoginFormState extends State<LoginForm> {
         return Padding(
             padding: const EdgeInsets.only(left: 20, right: 20),
             child: Column(
+
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -86,7 +89,7 @@ class LoginFormState extends State<LoginForm> {
                               disabledColor: Colors.brown,
                               shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(10.0) ),
                               child: const Padding(
-                                  padding: EdgeInsets.only(top: 12, bottom: 12, right: 30, left: 30),
+                                  padding: EdgeInsets.only(top: 15, bottom: 15, right: 30, left: 30),
                                   child: Text("Login", style: TextStyle(color: Colors.white,
                           )),
                               )),
@@ -118,11 +121,13 @@ class __LoginState extends State<Login>{
         return Scaffold(
           appBar: AppBar(title: const Text("Login", style: TextStyle(color: const Color.fromARGB(255, 245, 160, 94), fontWeight: FontWeight.w400, letterSpacing: 1.3)),
             leading: Icon(Icons.account_circle, size: 26, color: const Color.fromARGB(255, 245, 160, 94),),
-            leadingWidth: 70,
+            leadingWidth: 60,
             backgroundColor: Colors.white, elevation: 1,),
-            body: Center(
+            body: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 80),
                 child: Column(
-                    mainAxisSize: MainAxisSize.min,
+                    mainAxisSize: MainAxisSize.max,
                     children: [
                         Image.asset("res/logo.png", width: 100,),
                         const SizedBox(height: 10,),
@@ -130,7 +135,8 @@ class __LoginState extends State<Login>{
                         const SizedBox(height: 15),
                         const LoginForm(),
                     ],),
-                ),
+              ),
+            ),
         );
     }
 }

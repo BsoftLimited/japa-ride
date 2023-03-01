@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:japa/components/location_list_tile.dart';
 import 'package:japa/components/panel.dart';
@@ -31,8 +34,8 @@ class SearchPanelState extends State<SearchPanel>{
     __searchController.addListener(() {
       if(__searchController.value.text.isEmpty && __searchIndex == 1){
         setState(() { __searchIndex = 0; });
-      }else if(__searchController.value.text.isNotEmpty && __searchIndex == 1){
-        setState(() { __searchIndex = 0; });
+      }else if(__searchController.value.text.isNotEmpty && __searchIndex == 0){
+        setState(() { __searchIndex = 1; });
       }
     });
   }
@@ -40,6 +43,7 @@ class SearchPanelState extends State<SearchPanel>{
   void palceAutocomplate(String query) async{
       Uri uri = Uri.https("maps.googleapis.com", "maps/api/place/autocomplete/json", { "input" : query, "key" : Util.mapAPIKey });
       String? response = await NetworkUtil.fetchUri(uri);
+      log("search response ${uri.toString()} - ${response}");
       if(response != null){
           PlaceAutocompleteResponse  result = PlaceAutocompleteResponse.parseAutocompleteResult(response);
           if(result.predictions != null){
@@ -63,7 +67,7 @@ class SearchPanelState extends State<SearchPanel>{
                 prefixIcon: Icon(Icons.search, size: 18,),
                 border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(25.0)))),
           ),
-          SizedBox(height: 8,),
+          SizedBox(height: 15,),
           Expanded(
             child: IndexedStack(
               index: __searchIndex,
@@ -78,8 +82,8 @@ class SearchPanelState extends State<SearchPanel>{
                 )),
                 Container(
                   child: ListView.builder(itemBuilder: (context, index) =>LocationListTile(
-                      press: () => widget.onSelected(placePredictions[index]),
-                      location: placePredictions[index].description!,
+                    onclicked: () { __searchController.clear(); widget.onSelected(placePredictions[index]); },
+                    autocompletePrediction: placePredictions[index],
                   ), itemCount: placePredictions.length,),
                 )
               ],),
