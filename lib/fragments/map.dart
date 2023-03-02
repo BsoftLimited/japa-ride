@@ -10,8 +10,6 @@ import 'package:japa/utils/util.dart';
 import 'package:location/location.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-
-
 enum Mode{ Select, Search }
 
 class TopButton extends StatelessWidget{

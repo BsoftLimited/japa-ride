@@ -9,9 +9,11 @@ import 'package:japa/items/user.dart';
 import 'package:japa/screens/loading.dart';
 import 'package:japa/services/init_service.dart';
 import 'package:japa/utils/util.dart';
+import 'package:location/location.dart';
 
 class Data extends Item{
     User user;
+    Option<LocationData> currentLocation = Option.none();
 
     Data.__new({required this.user});
 
@@ -22,6 +24,10 @@ class Data extends Item{
     static create(Map<String, dynamic> data){
         User user = UserFrom(data["user"]);
         __data = Option.some(Data.__new(user: user));
+    }
+
+    void setCurrentLocation(LocationData locationData){
+        currentLocation = Option.some(locationData);
     }
 
     static void initialize(BuildContext context, String data, void Function() finished){

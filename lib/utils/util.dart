@@ -62,6 +62,18 @@ class Util{
                 (1 - cos((end.longitude - start.longitude) * p))/2;
         return 12742 * asin(sqrt(a));
     }
+
+    static String getStars(int count){
+        String init = "";
+        for(int i = 0; i < count; i++){
+            init += "\u2B50 ";
+        }
+
+        for(int i = count; i < 5; i++){
+            init += "\u2606 ";
+        }
+        return init;
+    }
 }
 
 class JsonHelper{

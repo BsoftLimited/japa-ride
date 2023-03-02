@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:japa/components/booking_panel.dart';
+import 'package:japa/components/drivers_panel.dart';
 import 'package:japa/components/search_panel.dart';
 import 'package:japa/items/location.dart';
 import 'package:japa/models/autocomplate_prediction.dart';
@@ -104,7 +105,10 @@ class PanelState extends State<Panel>{
                       setState(() { __selecting = Selecting.Destination; });
                       widget.panelController.open();
                   }
-              },), BookingPanel(search: search, destination: destination, location: location, distance: widget.distance,) ],
+              },),
+              BookingPanel(search: search, destination: destination, location: location, distance: widget.distance,),
+              DriversPanel()
+          ],
         );
     }
 }

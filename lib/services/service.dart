@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:japa/utils/util.dart';
@@ -28,14 +29,14 @@ class Service {
             final uri = Uri.parse(Util.HomeUri + host);
             final headers = { HttpHeaders.contentTypeHeader: "application/json;charset=UTF-8", HttpHeaders.acceptHeader: "application/json"};
 
-            Future<http.Response> init = http.post(uri, body: jsonString, headers: headers);
+            Future<http.Response> init = http.post(uri, body: jsonString, headers: {"Content-Type": "application/json"});
             String result = await init.then<String>((value) {
                 succeed = value.statusCode == 200 || value.statusCode == 201;
                 return __processData(value);
             }).onError<String>((error, stackTrace) => __processError(error, stackTrace));
 
             listener(succeed, result, jsonString);
-        }catch(ex){
+        }catch(ex){ log("I want to rex $ex ");
             listener(false, ex.toString(), params.toString());
         }
 
